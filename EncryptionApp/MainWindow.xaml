@@ -5,33 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EncryptionApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox x:Name="pTextBox" HorizontalAlignment="Left" Height="23" Margin="68,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="pLabel" Content="число p" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Cursor=""/>
-        <TextBox x:Name="qTextBox" HorizontalAlignment="Left" Height="23" Margin="68,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="qLabel" Content="число p" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Cursor=""/>
-        <Button x:Name="Сalculate" Content="Рассчитать" HorizontalAlignment="Left" Margin="113,73,0,0" VerticalAlignment="Top" Width="75" Click="Сalculate_Click"/>
-        <Label x:Name="privateKeyLabel" Content="Закрытый ключ:" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="publicKeyLabel" Content="Открытый ключ:" HorizontalAlignment="Left" Margin="8,129,0,0" VerticalAlignment="Top"/>
-        <TabControl HorizontalAlignment="Left" Height="409" Margin="372,0,0,0" VerticalAlignment="Top" Width="410">
-            <TabItem Header="TabItem">
+        Title="MainWindow" Height="246.575" Width="800">
+    <Grid Height="216" Width="792">
+        <TextBox x:Name="pAndQTextBox" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Height="23" Margin="10,56,0,0" VerticalAlignment="Top" Width="307" Text="401 101"/>
+        <Button x:Name="Сalculate" Content="Рассчитать" HorizontalAlignment="Left" Margin="242,84,0,0" VerticalAlignment="Top" Width="75" Click="Сalculate_Click"/>
+        <Label Content="Закрытый ключ:" HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top" Width="101"/>
+        <Label Content="Открытый ключ:" HorizontalAlignment="Left" Margin="10,119,0,0" VerticalAlignment="Top"/>
+        <TabControl HorizontalAlignment="Left" Height="216" Margin="342,0,0,0" VerticalAlignment="Top" Width="440">
+            <TabItem Header="Зашифровать">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*"/>
-                        <ColumnDefinition Width="81*"/>
+                        <ColumnDefinition Width="87*"/>
+                        <ColumnDefinition Width="317*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="messageTextBox" HorizontalAlignment="Left" Height="23" Margin="7.753,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-                    <Label x:Name="messageLabel" Content="сообщение" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Cursor="" Grid.ColumnSpan="2"/>
-                    <Button x:Name="Encrypt" Content="Зашифровать" HorizontalAlignment="Left" Margin="37.753,41,0,0" VerticalAlignment="Top" Width="90" Click="Encrypt_Click" Grid.Column="1"/>
-                    <Label x:Name="dencrypdedMessageLabel" Content="число p" HorizontalAlignment="Left" Margin="10,114,0,0" VerticalAlignment="Top" Cursor="" Grid.ColumnSpan="2" Width="154"/>
-                    <TextBox x:Name="encrypdedMessageLabel" HorizontalAlignment="Left" Height="23" Margin="10,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="384" Grid.ColumnSpan="2" UndoLimit="1001"/>
+                    <TextBox x:Name="messageTextBox" HorizontalAlignment="Left" Height="23" Margin="29,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="302" Grid.Column="1"/>
+                    <Label Content="Сообщение" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" Cursor="" Height="26" Width="83"/>
+                    <Button x:Name="Encrypt" Content="Зашифровать" HorizontalAlignment="Left" Margin="241,76,0,0" VerticalAlignment="Top" Width="90" Click="Encrypt_Click" Grid.Column="1" Height="20"/>
+                    <TextBox x:Name="encryptedMessage1TextBox" HorizontalAlignment="Left" Height="23" Margin="29,120,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="302" UndoLimit="1001" Grid.Column="1"/>
+                    <Label Content="Зашифрованное" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="101"/>
+                    <Label Content="Ключ" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Width="101" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="keyTextBox" HorizontalAlignment="Left" Height="23" Margin="29,18,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="302" Grid.Column="1"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="TabItem">
+            <TabItem Header="Расшифровать">
                 <Grid Background="#FFE5E5E5">
+                    <TextBox x:Name="encryptedMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="116,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="308"/>
+                    <Label Content="Сообщение" HorizontalAlignment="Left" Margin="10,102,0,0" VerticalAlignment="Top" Cursor="" Height="26" Width="84"/>
+                    <Button x:Name="decrypt" Content="Расшифровать" HorizontalAlignment="Left" Margin="334,75,0,0" VerticalAlignment="Top" Width="90" Height="20" Click="Decrypt_Click"/>
+                    <TextBox x:Name="encryptedTextBox" HorizontalAlignment="Left" Height="23" Margin="116,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="308" UndoLimit="1001"/>
+                    <Label Content="Зашифрованное" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="101"/>
                 </Grid>
             </TabItem>
         </TabControl>
+        <Label Content="Генератор ключей, укажите два простых числа p и q:" HorizontalAlignment="Left" Margin="10,24,0,0" VerticalAlignment="Top" Width="307" Height="27" AutomationProperties.IsColumnHeader="True"/>
+        <TextBox x:Name="publicKeyTextBox" HorizontalAlignment="Left" Height="23" Margin="116,122,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="privateKeyTextBox" HorizontalAlignment="Left" Height="23" Margin="116,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="help" Content="?" HorizontalAlignment="Left" Margin="10,389,0,0" VerticalAlignment="Top" Width="20" Click="Help_Click"/>
     </Grid>
 </Window>

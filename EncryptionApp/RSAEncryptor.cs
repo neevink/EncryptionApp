@@ -44,10 +44,13 @@ namespace EncryptionApp
         {
             byte[] bytes = Encoding.UTF8.GetBytes(message);
             int[] vals = new int[bytes.Length];
-            
+
+            int c = 0;
             for(int i = 0; i < bytes.Length; i++)
             {
                 vals[i] = ((int)bytes[i]).BinaryPow(PublicKey.Second, PublicKey.First);
+                vals[i] = (vals[i] + c) % PublicKey.First;
+                c = vals[i];
             }
 
             return vals;
@@ -56,10 +59,18 @@ namespace EncryptionApp
         public string Decrypt(int[] encrypdedMessage)
         {
             byte[] bytes = new byte[encrypdedMessage.Length];
-
+            
             for (int i = 0; i < encrypdedMessage.Length; i++)
             {
-                bytes[i] = (byte)encrypdedMessage[i].BinaryPow(PrivateKey.Second, PrivateKey.First);
+                if(i == 0)
+                {
+                    bytes[i] = (byte)encrypdedMessage[i].BinaryPow(PrivateKey.Second, PrivateKey.First);
+                }
+                else
+                {
+                    bytes[i] = (byte)((encrypdedMessage[i] - encrypdedMessage[i - 1] + PrivateKey.First) % PrivateKey.First).BinaryPow(PrivateKey.Second, PrivateKey.First);
+                }
+                
             }
             return Encoding.UTF8.GetString(bytes);
         }

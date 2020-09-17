@@ -32,23 +32,24 @@ namespace EncryptionApp
             int p, q;
             try
             {
-                p = int.Parse(pTextBox.Text);
-                q = int.Parse(qTextBox.Text);
+                string[] pq = pAndQTextBox.Text.Split(' ');
+                p = int.Parse(pq[0]);
+                q = int.Parse(pq[1]);
 
                 if(p < 0 || q < 0 || p == q || p*q <= 257 || !p.IsPrime() || !q.IsPrime())
                 {
                     throw new Exception();
                 }
             }
-            catch(Exception exc)
+            catch
             {
-                MessageBox.Show("Некорректные значения!\np и q должны быть простыми числами, причём p ≠ q и p × q > 257.", "Ошибка!");
+                MessageBox.Show("Некорректные значения!p и q указываются через пробел\np и q должны быть простыми числами, причём p ≠ q и p × q > 257.", "Ошибка!");
                 return;
             }
 
             encryptor = new RSAEncryptor(p, q);
-            publicKeyLabel.Content = $"Открытый ключ: {encryptor.PublicKey.First}, {encryptor.PublicKey.Second}";
-            privateKeyLabel.Content = $"Закрытый ключ: {encryptor.PrivateKey.First}, {encryptor.PrivateKey.Second}";
+            publicKeyTextBox.Text = $"{encryptor.PublicKey.First} {encryptor.PublicKey.Second}";
+            privateKeyTextBox.Text = $"{encryptor.PrivateKey.First} {encryptor.PrivateKey.Second}";
         }
 
         private void Encrypt_Click(object sender, RoutedEventArgs e)
@@ -57,15 +58,43 @@ namespace EncryptionApp
             {
                 string message = messageTextBox.Text;
                 StringBuilder encryptedMessage = new StringBuilder();
-                foreach (var b in encryptor.Encrypt(encryptor.PublicKey, message))
+
+                string[] key = keyTextBox.Text.Split(' ');
+                Pair<int, int> k = new Pair<int, int>(int.Parse(key[0]), int.Parse(key[1]));
+
+                foreach (var b in encryptor.Encrypt(k, message))
                 {
                     encryptedMessage.Append(b.ToString()+" ");
                 }
-                encrypdedMessageLabel.Text = encryptedMessage.ToString();
-
-                dencrypdedMessageLabel.Content = encryptor.Decrypt(encryptor.Encrypt(encryptor.PublicKey, message));
+                encryptedMessage1TextBox.Text = encryptedMessage.ToString();
             }
-            catch(Exception exc)
+            catch
+            {
+                MessageBox.Show("Что-то не так!", "Ошибка!");
+                return;
+            }
+        }
+
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Эта шифравалка использует упрощённый вариант шифрования RSA. Сделана Неевиным Кириллом. Всё.", "Ты похоже хз что делать");
+        }
+
+        private void Decrypt_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string[] vals = encryptedTextBox.Text.Split(' ');
+                int[] nums = new int[vals.Length];
+                for(int i = 0; i < vals.Length; i++)
+                {
+                    if (vals[i] != "" && vals[i] != null)
+                        nums[i] = int.Parse(vals[i]);
+                }
+
+                encryptedMessageTextBox.Text = encryptor.Decrypt(nums);
+            }
+            catch
             {
                 MessageBox.Show("Что-то не так!", "Ошибка!");
                 return;
