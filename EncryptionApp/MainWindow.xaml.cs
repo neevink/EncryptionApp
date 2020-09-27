@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Numerics;
 
 namespace EncryptionApp
 {
@@ -29,12 +30,12 @@ namespace EncryptionApp
 
         private void Сalculate_Click(object sender, RoutedEventArgs e)
         {
-            int p, q;
+            BigInteger p, q;
             try
             {
                 string[] pq = pAndQTextBox.Text.Split(' ');
-                p = int.Parse(pq[0]);
-                q = int.Parse(pq[1]);
+                p = BigInteger.Parse(pq[0]);
+                q = BigInteger.Parse(pq[1]);
 
                 if(p < 0 || q < 0 || p == q || p*q <= 257 || !p.IsPrime() || !q.IsPrime())
                 {
@@ -60,7 +61,7 @@ namespace EncryptionApp
                 StringBuilder encryptedMessage = new StringBuilder();
 
                 string[] key = keyTextBox.Text.Split(' ');
-                Pair<int, int> k = new Pair<int, int>(int.Parse(key[0]), int.Parse(key[1]));
+                Pair<BigInteger, BigInteger> k = new Pair<BigInteger, BigInteger>(BigInteger.Parse(key[0]), BigInteger.Parse(key[1]));
 
                 foreach (var b in encryptor.Encrypt(k, message))
                 {
@@ -85,18 +86,20 @@ namespace EncryptionApp
             try
             {
                 string[] vals = encryptedTextBox.Text.Split(' ');
-                int[] nums = new int[vals.Length];
+                BigInteger[] nums = new BigInteger[vals.Length];
                 for(int i = 0; i < vals.Length; i++)
                 {
                     if (vals[i] != "" && vals[i] != null)
-                        nums[i] = int.Parse(vals[i]);
+                        nums[i] = BigInteger.Parse(vals[i]);
                 }
 
                 encryptedMessageTextBox.Text = encryptor.Decrypt(nums);
+
+                vals[0] = "";
             }
-            catch
+            catch(Exception exc)
             {
-                MessageBox.Show("Что-то не так!", "Ошибка!");
+                MessageBox.Show("Что-то не так!" + exc.Message, "Ошибка!");
                 return;
             }
         }

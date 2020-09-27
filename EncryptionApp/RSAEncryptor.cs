@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace EncryptionApp
 {
@@ -12,43 +13,41 @@ namespace EncryptionApp
         /// <summary>
         /// Public key, pair N and E
         /// </summary>
-        public Pair<int, int> PublicKey { get; private set; }
+        public Pair<BigInteger, BigInteger> PublicKey { get; private set; }
 
         /// <summary>
         /// Private key, pair N and D
         /// </summary>
-        public Pair<int, int> PrivateKey { get; private set; }
+        public Pair<BigInteger, BigInteger> PrivateKey { get; private set; }
 
-        public RSAEncryptor(int p, int q)
+        public RSAEncryptor(BigInteger p, BigInteger q)
         {
-            PublicKey = new Pair<int, int>();
-            PrivateKey = new Pair<int, int>();
-            PublicKey.First = p * q;
-            PrivateKey.First = PublicKey.First;
+            PublicKey = new Pair<BigInteger, BigInteger>();
+            PrivateKey = new Pair<BigInteger, BigInteger>();
+            PrivateKey.First = PublicKey.First = p * q;
 
             // Euler function
-            int f = (p - 1) * (q - 1);
+            BigInteger f = (p - 1) * (q - 1);
 
             // Открытая экспонента, обычно одно из простых чисел Ферма 3, 5, 17, 257, 65537
-            int e = 257;
+            BigInteger e = 257;
             PublicKey.Second = e;
 
-            int x, y;
+            BigInteger x, y;
             e.SolveDiophantineEquation(f, out x, out y);
 
-            int d = f + x;
-            PrivateKey.Second = d;
+            PrivateKey.Second = f + x;
         }
 
-        public int[] Encrypt(Pair<int, int> otherPublicKey, string message)
+        public BigInteger[] Encrypt(Pair<BigInteger, BigInteger> otherPublicKey, string message)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(message);
-            int[] vals = new int[bytes.Length];
+            BigInteger[] vals = new BigInteger[bytes.Length];
 
-            int c = 0;
+            BigInteger c = 0;
             for(int i = 0; i < bytes.Length; i++)
             {
-                vals[i] = ((int)bytes[i]).BinaryPow(PublicKey.Second, PublicKey.First);
+                vals[i] = ((BigInteger)bytes[i]).BinaryPow(PublicKey.Second, PublicKey.First);
                 vals[i] = (vals[i] + c) % PublicKey.First;
                 c = vals[i];
             }
@@ -56,11 +55,11 @@ namespace EncryptionApp
             return vals;
         }
 
-        public string Decrypt(int[] encrypdedMessage)
+        public string Decrypt(BigInteger[] encrypdedMessage)
         {
             byte[] bytes = new byte[encrypdedMessage.Length];
             
-            for (int i = 0; i < encrypdedMessage.Length; i++)
+            for (int i = 0; i < encrypdedMessage.Length-1; i++)
             {
                 if(i == 0)
                 {
@@ -68,9 +67,8 @@ namespace EncryptionApp
                 }
                 else
                 {
-                    bytes[i] = (byte)((encrypdedMessage[i] - encrypdedMessage[i - 1] + PrivateKey.First) % PrivateKey.First).BinaryPow(PrivateKey.Second, PrivateKey.First);
+                    bytes[i] = (byte)(((encrypdedMessage[i] - encrypdedMessage[i - 1] + PrivateKey.First) % PrivateKey.First).BinaryPow(PrivateKey.Second, PrivateKey.First) % 256);
                 }
-                
             }
             return Encoding.UTF8.GetString(bytes);
         }
